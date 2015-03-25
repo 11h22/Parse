@@ -23,6 +23,7 @@ class Text{
 public:
   Text();
   ~Text();
+  void Initialize();
   void GetSent();
   void PrintStrings(bool a,bool b, bool c) const;
   void GetKey();
@@ -40,14 +41,33 @@ Text::Text(){
   }
 }
 Text::~Text(){
-  cout<<"Ended Text Cleanly"<<endl;
+  cout<<"Cleaning up memory"<<endl;
   free(str);
   free(numsent);
   free(estr);
   free(enumsent);
+  cout<<"Ended Text Cleanly"<<endl;
+}
+void Text::Initialize(){
+  strlen=0; 
+  numsent=0;
+  enumsent=0;
+  for (int i=0;i<27;i++){
+    //Regularalphabet[i]=' ';
+    RegAlphaNum[i]=0;
+    //cipher[i]=' ';
+    ciphernumsent[i]=0;
+    //Dalphabet[i]=' ';
+    letterfreq[i]=0;
+    eletterfreq[i]=0;
+    letterfreqfromwiki[i]=0;
+    for (int j=0;j<27;j++){
+      matrix[i][j]=0;
+    }
+  }
 }
 void Text::GetSent(){
-  char c; 
+  char c=' '; 
   int i=0,j=1;
   bool a=0;
   int b=0;
@@ -83,7 +103,6 @@ void Text::GetSent(){
 	j++;
       }
       fclose (pFile);
-      printf ("%s",str);
     }
   }
   else {
@@ -100,9 +119,12 @@ void Text::GetSent(){
       j++;
     }
   }
+  str = (char*)realloc(str,j*sizeof(char));
+  numsent = (int*)realloc(numsent,j*sizeof(int));
   str[i]='\0';   
   numsent[i]=0;
   strlen=i;
+  printf ("%s",str);
   printf("Length of string is : %d\n",strlen);
   for (int i=0;i<strlen;i++){
     if (numsent[i]>64&&numsent[i]<91){
@@ -225,7 +247,7 @@ void Text::Frequency(){
   }
 }
 void Text::Matrix(){
-  double bestchance[27];
+  double bestchance[27]={0};
   int plain=0;
   int ciph=0;
   for (int i=0;i<27;i++){
@@ -267,7 +289,7 @@ void Text::Matrix(){
   }
 }
 void Text::LookatFrequency(){
-  float swap[3];
+  float swap[3]={0};
   char cswap[3];
   char alpha1[27];
   char alpha2[27];
@@ -310,6 +332,7 @@ void Text::LookatFrequency(){
 }
 int main(){
   Text *GO= new Text();
+  GO->Initialize();
   GO->GetSent();
   GO->GetKey();
   GO->GetKeynum();
