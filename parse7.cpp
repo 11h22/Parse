@@ -41,25 +41,27 @@ Text::Text(){
 }
 Text::~Text(){
   cout<<"Ended Text Cleanly"<<endl;
+  free(str);
+  free(numsent);
+  free(estr);
+  free(enumsent);
 }
 void Text::GetSent(){
   char c; 
   int i=0,j=1;
   bool a=0;
+  int b=0;
   str = (char*)malloc(sizeof(char));
   numsent = (int*)malloc(sizeof(int));
-  printf("Enter String : ");
-  while(c!='\n') {
-    c = getc(stdin);
-    str = (char*)realloc(str,j*sizeof(char));
-    numsent = (int*)realloc(numsent,j*sizeof(int));
-    str[i] = c;
-    numsent[i]=c;
-    i++;
-    j++;
-  }
   cout<<"Input text from:"<<endl<<"0 for stdin   1 for file"<<endl;
-  cin>>a;
+  scanf("%i",&b);
+  if (b!=0){
+    a=1;
+  }
+  else {
+    a=0;
+  }
+  printf("Enter String : ");
   if (a){
     //i=0,j=1;
     FILE * pFile;
@@ -82,6 +84,20 @@ void Text::GetSent(){
       }
       fclose (pFile);
       printf ("%s",str);
+    }
+  }
+  else {
+    while(c!='\n') {
+      c = getc(stdin);
+      if (i==0){
+	c=' ';
+      }
+      str = (char*)realloc(str,j*sizeof(char));
+      numsent = (int*)realloc(numsent,j*sizeof(int));
+      str[i] = c;
+      numsent[i]=c;
+      i++;
+      j++;
     }
   }
   str[i]='\0';   
