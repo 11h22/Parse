@@ -185,10 +185,10 @@ void Text::GetKeynum(){
   }
 }
 void Text::DoIt(){
-  estr = (char*)malloc(sizeof(char[strlen]));
-  enumsent = (int*)malloc(sizeof(int[strlen]));
-  memcpy(estr,str,sizeof(char[strlen]));
-  memcpy(enumsent,numsent,sizeof(int[strlen]));
+  estr = (char*)malloc(sizeof(char[strlen+1]));
+  enumsent = (int*)malloc(sizeof(int[strlen+1]));
+  memcpy(estr,str,sizeof(char[strlen+1]));
+  memcpy(enumsent,numsent,sizeof(int[strlen+1]));
   for (int i=0;i<strlen;i++){
     enumsent[i]=ciphernumsent[numsent[i]]; 
   }
