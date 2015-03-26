@@ -250,7 +250,6 @@ void Text::Matrix(){
   double bestchance[27]={0};
   int plain=0;
   int ciph=0;
-  double matrixforplotting[729][3]={0};
   for (int i=0;i<27;i++){
     //cout<<Regularalphabet[i]<<"\t";
     for (int j=0;j<27;j++){
@@ -277,22 +276,6 @@ void Text::Matrix(){
     fprintf(pFile,"\n");
   }
   fclose (pFile);
-  for (int i=0;i<27;i++){
-    for (int j=0;j<27;j++){
-      matrixforplotting[j+(i*27)][0]=i;
-      matrixforplotting[j+(i*27)][1]=j;
-      matrixforplotting[j+(i*27)][2]=matrix[i][j];
-    }
-  }
-  FILE * pFile1;
-  pFile1 = fopen ("/home/o/Parse/cipherfreqforgnuplot.dat", "w");
-  for (int i=0;i<729;i++){
-    for (int j=0;j<3;j++){
-      fprintf(pFile1,"%f\t",matrixforplotting[i][j]);
-    }
-    fprintf(pFile1,"\n");
-  }
-  fclose (pFile1);
   cout<<"Cipher to English  Minimum difference in frequencies"<<endl;
   for (int i=1;i<27;i++){
     bestchance[i]=matrix[i][1];
