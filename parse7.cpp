@@ -241,7 +241,7 @@ void Text::Frequency(){
     fscanf(pFileR,"%f",&letterfreqfromwiki[i]);
   }
   fclose (pFileR);
-  cout<<endl<<"Frequency input\tFrequency of English\tFrequency of Cipher"<<endl;
+  cout<<endl<<"Frequency English\tFrequency of plaintext\tFrequency of Cipher"<<endl;
   for (int i=0;i<27;i++){
     cout<<Regularalphabet[i]<<"\t"<<letterfreqfromwiki[i]<<"\t\t"<<letterfreq[i]*100<<"\t\t"<<eletterfreq[i]*100<<endl;
   }
@@ -250,6 +250,7 @@ void Text::Matrix(){
   double bestchance[27]={0};
   int plain=0;
   int ciph=0;
+  double matrixforplotting[729][3]={0};
   for (int i=0;i<27;i++){
     //cout<<Regularalphabet[i]<<"\t";
     for (int j=0;j<27;j++){
@@ -257,7 +258,7 @@ void Text::Matrix(){
 	matrix[i][j]=0;
       }
       else {
-	matrix[i][j]=letterfreqfromwiki[j]-((double)eletterfreq[i]*100);
+	matrix[i][j]=((double)eletterfreq[i]*100)-letterfreqfromwiki[j];
 	if (matrix[i][j]<0){
 	  matrix[i][j]=matrix[i][j]*(-1);
 	}
@@ -269,16 +270,33 @@ void Text::Matrix(){
   }
   FILE * pFile;
   pFile = fopen ("/home/o/Parse/cipherfreq.text", "w");
-  for (int i=1;i<27;i++){
-    for (int j=1;j<27;j++){
+  for (int i=0;i<27;i++){
+    for (int j=0;j<27;j++){
       fprintf(pFile,"%f\t",matrix[i][j]);
     }
     fprintf(pFile,"\n");
   }
   fclose (pFile);
+  for (int i=0;i<27;i++){
+    for (int j=0;j<27;j++){
+      matrixforplotting[j+(i*27)][0]=i;
+      matrixforplotting[j+(i*27)][1]=j;
+      matrixforplotting[j+(i*27)][2]=matrix[i][j];
+    }
+  }
+  FILE * pFile1;
+  pFile1 = fopen ("/home/o/Parse/cipherfreqforgnuplot.dat", "w");
+  for (int i=0;i<729;i++){
+    for (int j=0;j<3;j++){
+      fprintf(pFile1,"%f\t",matrixforplotting[i][j]);
+    }
+    fprintf(pFile1,"\n");
+  }
+  fclose (pFile1);
+  cout<<"Cipher to English  Minimum difference in frequencies"<<endl;
   for (int i=1;i<27;i++){
-  bestchance[i]=matrix[i][1];
-  plain=i;
+    bestchance[i]=matrix[i][1];
+    plain=i;
     for (int j=1;j<26;j++){
       if (bestchance[i]>matrix[i][j+1]){
 	bestchance[i]=matrix[i][j+1];
