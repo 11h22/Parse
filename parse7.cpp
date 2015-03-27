@@ -40,7 +40,8 @@ Text::Text(){
     RegAlphaNum[i]=Regularalphabet[i];
   }
 }
-Text::~Text(){
+Text::~Text()
+{
   cout<<"Cleaning up memory"<<endl;
   free(str);
   free(numsent);
