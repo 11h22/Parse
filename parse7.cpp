@@ -33,6 +33,7 @@ public:
   void Frequency();
   void LookatFrequency();
   void Matrix();
+  void CaesarBreak();
 }; 
 Text::Text(){
   strncpy(Regularalphabet," abcdefghijklmnopqrstuvwxyz",27);
@@ -40,8 +41,7 @@ Text::Text(){
     RegAlphaNum[i]=Regularalphabet[i];
   }
 }
-Text::~Text()
-{
+Text::~Text(){
   cout<<"Cleaning up memory"<<endl;
   free(str);
   free(numsent);
@@ -54,11 +54,8 @@ void Text::Initialize(){
   numsent=0;
   enumsent=0;
   for (int i=0;i<27;i++){
-    //Regularalphabet[i]=' ';
     RegAlphaNum[i]=0;
-    //cipher[i]=' ';
     ciphernumsent[i]=0;
-    //Dalphabet[i]=' ';
     letterfreq[i]=0;
     eletterfreq[i]=0;
     letterfreqfromwiki[i]=0;
@@ -125,7 +122,7 @@ void Text::GetSent(){
   str[i]='\0';   
   numsent[i]=0;
   strlen=i;
-  printf ("%s",str);
+  //printf ("%s",str);
   printf("Length of string is : %d\n",strlen);
   for (int i=0;i<strlen;i++){
     if (numsent[i]>64&&numsent[i]<91){
@@ -242,9 +239,9 @@ void Text::Frequency(){
     fscanf(pFileR,"%f",&letterfreqfromwiki[i]);
   }
   fclose (pFileR);
-  cout<<endl<<"Frequency English\tFrequency of plaintext\tFrequency of Cipher"<<endl;
+  //cout<<endl<<"Frequency English\tFrequency of plaintext\tFrequency of Cipher"<<endl;
   for (int i=0;i<27;i++){
-    cout<<Regularalphabet[i]<<"\t"<<letterfreqfromwiki[i]<<"\t\t"<<letterfreq[i]*100<<"\t\t"<<eletterfreq[i]*100<<endl;
+    //cout<<Regularalphabet[i]<<"\t"<<letterfreqfromwiki[i]<<"\t\t"<<letterfreq[i]*100<<"\t\t"<<eletterfreq[i]*100<<endl;
   }
 }
 void Text::Matrix(){
@@ -277,7 +274,8 @@ void Text::Matrix(){
     fprintf(pFile,"\n");
   }
   fclose (pFile);
-  cout<<"Cipher to English  Minimum difference in frequencies"<<endl;
+  //cout<<"Initial Best Guesses"<<endl;
+  //cout<<"Cipher to English  Minimum difference in frequencies"<<endl;
   for (int i=1;i<27;i++){
     bestchance[i]=matrix[i][1];
     plain=i;
@@ -287,7 +285,7 @@ void Text::Matrix(){
 	ciph=j+1;
       }
     }
-    cout<<Regularalphabet[plain]<<" to  "<<Regularalphabet[ciph]<<" "<<bestchance[i]<<endl;
+    //cout<<Regularalphabet[plain]<<" to  "<<Regularalphabet[ciph]<<" "<<bestchance[i]<<endl;
   }
 }
 void Text::LookatFrequency(){
@@ -327,9 +325,71 @@ void Text::LookatFrequency(){
       }
     }
   }	   
-  cout<<"Sorted English Frequencies\tSorted Input Frequencies\tSorted Cipher Frequencies"<<endl;
+  //cout<<"Sorted English Frequencies\tSorted Input Frequencies\tSorted Cipher Frequencies"<<endl;
   for (int i=0;i<27;i++){
-    cout<<alpha1[i]<<"\t\t"<<letterfreqfromwiki[i]<<"\t\t"<<alpha2[i]<<"\t\t"<<letterfreq[i]*100<<"\t"<<alpha3[i]<<"\t\t"<<eletterfreq[i]*100<<endl;
+    //cout<<alpha1[i]<<"\t\t"<<letterfreqfromwiki[i]<<"\t\t"<<alpha2[i]<<"\t\t"<<letterfreq[i]*100<<"\t"<<alpha3[i]<<"\t\t"<<eletterfreq[i]*100<<endl;
+  }
+  //cout<<"Cipher to English  Minimum difference in frequencies"<<endl;
+  for (int i=1;i<27;i++){
+    for (int j=1;j<26;j++){
+      if (matrix[i][j]<1.5){
+	//cout<<Regularalphabet[i]<<" to  "<<Regularalphabet[j]<<" "<<matrix[i][j]<<endl;
+      }
+    }
+  }
+}
+void Text::CaesarBreak(){
+  double cmatrix[27][27]={0};
+  double summedpercentages[27][2]={0};
+  double swap[2]={0};
+  for (int i=1;i<27;i++){
+    for (int j=1;j<26;j++){
+      if (matrix[i][j]<1.5){
+	cmatrix[i][j]=matrix[i][j];
+	//cout<<Regularalphabet[i]<<" to  "<<Regularalphabet[j]<<" "<<matrix[i][j]<<endl;
+      }
+    }
+  }
+  FILE * pFile;
+  pFile = fopen ("/home/o/Parse/cipherfreqsortedfiltered.text", "w");
+  for (int i=0;i<27;i++){
+    for (int j=0;j<27;j++){
+      fprintf(pFile,"%f\t",cmatrix[i][j]);
+    }
+    fprintf(pFile,"\n");
+  }
+  fclose (pFile);
+  for (int i=0;i<27;i++){ //to be used for data analysis
+    for (int j=26;j>-1;j--){
+      //cout<<(j+i+1)%27<<" ";
+      summedpercentages[(j+i+1)%27][0]=summedpercentages[(j+i+1)%27][0]+matrix[i][j];
+      summedpercentages[(j+i+1)%27][1]=j;
+    }
+    //cout<<endl;
+  }
+  cout<<endl<<endl;
+  /*for (int i=26;i>-1;i--){ //easier to read
+    for (int j=26;j>-1;j--){
+      cout<<(j+i+1)%27<<" ";
+    }
+    cout<<endl;
+    }*/
+  for (int i=0;i<27;i++){
+    for (int j=0;j<27;j++){
+      if (summedpercentages[j][0] > summedpercentages[j+1][0]) {
+        swap[0] = summedpercentages[j][0];
+        summedpercentages[j][0] = summedpercentages[j+1][0];
+        summedpercentages[j+1][0] = swap[0];
+        swap[1] = summedpercentages[j][1];
+        summedpercentages[j][1] = summedpercentages[j+1][1];
+        summedpercentages[j+1][1] = swap[1];
+      }
+    }
+  }
+  //y=x+13;
+  cout<<"Summed percentages on all lines with slope 1"<<endl<<"The 2nd number is the yintercept"<<endl;
+  for (int i=0;i<27;i++){
+    cout<<summedpercentages[i][0]<<"\t"<<summedpercentages[i][1]<<endl;
   }
 }
 int main(){
@@ -343,6 +403,7 @@ int main(){
   GO->Frequency();
   GO->Matrix();
   GO->LookatFrequency();
+  GO->CaesarBreak();
   delete GO;
 }
   /*fgets(word1, 100, stdin);*/
