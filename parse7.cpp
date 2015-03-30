@@ -306,7 +306,7 @@ void Text::LookatFrequency(){
   strncpy(alpha2,Regularalphabet,26);
   strncpy(alpha3,Regularalphabet,26);
   for (int i=0;i<26;i++){
-    for (int j=0;j<26;j++){
+    for (int j=0;j<25;j++){
       if (letterfreqfromwiki[j] < letterfreqfromwiki[j+1]) {
         swap[0] = letterfreqfromwiki[j];
         letterfreqfromwiki[j] = letterfreqfromwiki[j+1];
@@ -333,9 +333,9 @@ void Text::LookatFrequency(){
       }
     }
   }	   
-  //cout<<"Sorted English Frequencies\tSorted Input Frequencies\tSorted Cipher Frequencies"<<endl;
+  cout<<"Sorted English Frequencies\tSorted Input Frequencies\tSorted Cipher Frequencies"<<endl;
   for (int i=0;i<26;i++){
-    //cout<<alpha1[i]<<"\t\t"<<letterfreqfromwiki[i]<<"\t\t"<<alpha2[i]<<"\t\t"<<letterfreq[i]*100<<"\t"<<alpha3[i]<<"\t\t"<<eletterfreq[i]*100<<endl;
+    cout<<alpha1[i]<<"\t\t"<<letterfreqfromwiki[i]<<"\t\t"<<alpha2[i]<<"\t\t"<<letterfreq[i]*100<<"\t"<<alpha3[i]<<"\t\t"<<eletterfreq[i]*100<<endl;
   }
   //cout<<"Cipher to English  Minimum difference in frequencies"<<endl;
   for (int i=0;i<26;i++){
@@ -403,8 +403,13 @@ void Text::CaesarBreak(){
   dciphernumsent[0]=summedpercentages[25][1];
   for (int i=0;i<26;i++){
     dciphernumsent[i]=((i+dciphernumsent[0])%26);
-    cout<<summedpercentages[i][0]<<"\t"<<summedpercentages[i][1]<<"\t"<<dciphernumsent[i]<<"\t"<<Regularalphabet[dciphernumsent[i]]<<endl;
+    cout<<summedpercentages[i][0]<<"\t"<<summedpercentages[i][1]<<"\t"<<dciphernumsent[i]<<endl;
   }
+  cout<<endl;
+  for (int i=0;i<26;i++){
+    cout<<Regularalphabet[i]<<"\tto\t"<<Regularalphabet[dciphernumsent[i]]<<endl;
+  }
+  cout<<endl;
 }
 void Text::Decrypt(){
   dstr = (char*)malloc(sizeof(char[strlen]));
@@ -413,7 +418,7 @@ void Text::Decrypt(){
   memcpy(dnumsent,enumsent,sizeof(int[strlen]));
   printf("%d\n",strlen);
   for (int i=0;i<strlen;i++){
-    dnumsent[i]=dciphernumsent[(enumsent[i]+3)%26];//suspicious +3 
+    dnumsent[i]=dciphernumsent[(enumsent[i])%26];//suspicious +3 
   }
   for (int i=0;i<strlen;i++){
     dstr[i]=Regularalphabet[dnumsent[i]];
