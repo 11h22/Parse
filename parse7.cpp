@@ -11,11 +11,14 @@ class Text{
   int *numsent;
   char *estr;
   int *enumsent;
+  char *dstr;
+  int *dnumsent;
   char Regularalphabet[27];
   int RegAlphaNum[27];
   char cipher[27];
   int ciphernumsent[27];
-  char Dalphabet[27];
+  char dcipher[27];
+  int dciphernumsent[27];
   double letterfreq[27];
   double eletterfreq[27];
   float letterfreqfromwiki[27];
@@ -34,6 +37,7 @@ public:
   void LookatFrequency();
   void Matrix();
   void CaesarBreak();
+  void Decrypt();
 }; 
 Text::Text(){
   strncpy(Regularalphabet," abcdefghijklmnopqrstuvwxyz",27);
@@ -47,15 +51,19 @@ Text::~Text(){
   free(numsent);
   free(estr);
   free(enumsent);
+  free(dstr);
+  free(dnumsent);
   cout<<"Ended Text Cleanly"<<endl;
 }
 void Text::Initialize(){
   strlen=0; 
   numsent=0;
   enumsent=0;
+  dnumsent=0;
   for (int i=0;i<27;i++){
     RegAlphaNum[i]=0;
     ciphernumsent[i]=0;
+    dciphernumsent[i]=0;
     letterfreq[i]=0;
     eletterfreq[i]=0;
     letterfreqfromwiki[i]=0;
@@ -388,9 +396,43 @@ void Text::CaesarBreak(){
   }
   //y=x+13;
   cout<<"Summed percentages on all lines with slope 1"<<endl<<"The 2nd number is the yintercept"<<endl;
+  dciphernumsent[0]=(int)summedpercentages[1][1];
   for (int i=0;i<27;i++){
-    cout<<summedpercentages[i][0]<<"\t"<<summedpercentages[i][1]<<endl;
+   dciphernumsent[i]=(i+dciphernumsent[0])%27;
+   cout<<summedpercentages[i][0]<<"\t"<<summedpercentages[i][1]<<"\t"<<dciphernumsent[i]<<"\t"<<Regularalphabet[dciphernumsent[i]]<<endl;
   }
+}
+void Text::Decrypt(){
+  dstr = (char*)malloc(sizeof(char[strlen+1]));
+  dnumsent = (int*)malloc(sizeof(int[strlen+1]));
+  memcpy(dstr,estr,sizeof(char[strlen+1]));
+  memcpy(dnumsent,enumsent,sizeof(int[strlen+1]));
+
+
+  for (int i=0;i<strlen;i++){
+    dnumsent[i]=dciphernumsent[numsent[i]]; 
+  }
+  for (int i=0;i<strlen;i++){
+    if (dnumsent[i]==0){
+      dstr[i]=' ';
+    }
+    else {
+      dstr[i]=Regularalphabet[enumsent[i]];
+    }
+  }
+  /*
+  strncpy(cipher," nopqrstuvwxyzabcdefghijklm",27);
+  for (int i=0;i<27;i++){
+    ciphernumsent[i]=cipher[i];
+  }
+  for (int i=0;i<27;i++){
+    if (ciphernumsent[i]>96){
+      ciphernumsent[i]=ciphernumsent[i]-96;
+    }
+      else {
+      ciphernumsent[i]=0;
+      }
+  }*/
 }
 int main(){
   Text *GO= new Text();
